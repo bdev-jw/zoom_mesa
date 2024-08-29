@@ -1,12 +1,24 @@
+'use client'
+
 import MeetingTypeList from '@/components/MeetingTypeList';
-import React from 'react'
+import React, { useEffect, useState } from 'react';
 
 const Home = () => {
-  const now=new Date();
+  const [time, setTime] = useState('');
+  const [date, setDate] = useState('');
 
-  const time = now.toLocaleTimeString('ko-KO', { hour:'2-digit', minute:'2-digit' })
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      setTime(now.toLocaleTimeString('ko-KO', { hour: '2-digit', minute: '2-digit' }));
+      setDate(new Intl.DateTimeFormat('ko-KO', { dateStyle: 'full' }).format(now));
+    };
 
-  const date = (new Intl.DateTimeFormat('ko-KO', {dateStyle:'full'})).format(now);
+    updateTime(); // 초기 시간과 날짜 설정
+    const interval = setInterval(updateTime, 1000); // 1초마다 업데이트
+
+    return () => clearInterval(interval); // 컴포넌트 언마운트 시 interval 정리
+  }, []);
 
   return (
     <section className='flex size-full flex-col gap-10 text-white'>
@@ -26,7 +38,7 @@ const Home = () => {
       </div>
       <MeetingTypeList />
     </section>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
